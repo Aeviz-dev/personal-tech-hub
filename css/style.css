@@ -1,0 +1,266 @@
+/* ==========================================================================
+   PERSONAL TECH HUB — style.css
+   Neon Nocturne · Full Terminal Interface
+   Foundation: design tokens, reset, base styles, layout utilities, atmosphere.
+   Komponen (system bar, window, pane, button, dll.) ada di components.css.
+
+   Urutan file ini:
+   1. Design tokens   (:root)
+   2. Reset
+   3. Base styles     (body, heading, link, focus)
+   4. Layout utilities
+   5. Atmosphere      (background glow)
+   ========================================================================== */
+
+
+/* 1. DESIGN TOKENS
+   Semua nilai desain disimpan di sini sebagai CSS variable.
+   Ubah satu nilai -> seluruh website ikut berubah.
+   -------------------------------------------------------------------------- */
+:root {
+  /* Palette — Neon Nocturne (warna mentah, jangan dipakai langsung di komponen) */
+  --color-bg:             #080B12;  /* Obsidian Black  */
+  --color-surface:        #101725;  /* Carbon Void     */
+  --color-surface-raised: #162033;  /* title bar, elemen yang "naik" */
+  --color-cyan:           #00F5FF;  /* Neon Cyan       */
+  --color-mint:           #39FFB6;  /* Laser Mint      */
+  --color-violet:         #B47CF9;  /* Electric Violet (dicerahkan untuk kontras teks) */
+  --color-magenta:        #FF3CAC;  /* Neon Magenta    */
+  --color-amber:          #FFB000;  /* Signal Amber    */
+  --color-text:           #F1F5F9;  /* Ice White       */
+  --color-text-muted:     #94A3B8;  /* teks sekunder   */
+  --color-border:         #1E2A3F;  /* garis dekoratif */
+  --color-border-strong:  #2A3850;  /* bingkai window  */
+
+  /* Role tokens — inilah yang dipakai komponen.
+     Pertanyaannya: elemen ini "identitas" atau "bisa diklik/dilakukan"? */
+  --color-identity: var(--color-cyan);     /* identitas sistem: brand, judul pane, command */
+  --color-action:   var(--color-mint);     /* interaksi: link, tombol, nav aktif, prompt   */
+  --color-path:     var(--color-violet);   /* nama direktori/path                          */
+  --color-flag:     var(--color-magenta);  /* flag command (sangat jarang)                 */
+  --color-status:   var(--color-amber);    /* status dan catatan penting                   */
+
+  /* Glow & tint (rgba = warna + opacity). Dipusatkan agar intensitas mudah diatur. */
+  --glow-ambient-cyan:     rgba(0, 245, 255, 0.06);
+  --glow-ambient-violet:   rgba(180, 124, 249, 0.06);
+  --glow-text-identity:    0 0 10px rgba(0, 245, 255, 0.45);   /* text-shadow */
+  --glow-action:           0 0 12px rgba(57, 255, 182, 0.35);  /* box-shadow  */
+  --ring-focus:            0 0 0 4px rgba(0, 245, 255, 0.18);
+  --border-action-soft:    rgba(57, 255, 182, 0.45);
+  --border-status-soft:    rgba(255, 176, 0, 0.45);
+  --tint-action:           rgba(57, 255, 182, 0.08);
+  --tint-action-strong:    rgba(57, 255, 182, 0.16);
+  --tint-neutral:          rgba(255, 255, 255, 0.025);         /* latar header pane */
+  --selection-bg:          rgba(0, 245, 255, 0.25);
+
+  /* Typography */
+  --font-mono: "JetBrains Mono", ui-monospace, "Cascadia Code", Consolas, monospace;
+  --font-sans: "Inter", system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+
+  /* Ukuran font. Minimum label 13px (0.8125rem) agar tetap terbaca. */
+  --text-xs:   0.8125rem;
+  --text-sm:   0.875rem;
+  --text-base: 1rem;
+  --text-lead: clamp(1.0625rem, 1rem + 0.3vw, 1.1875rem);
+  --text-h3:   1.125rem;
+  --text-h2:   clamp(1.5rem, 1.2rem + 1.3vw, 2rem);
+  --text-h1:   clamp(1.875rem, 1.2rem + 2.6vw, 3rem);
+
+  --leading-body:    1.6;
+  --leading-heading: 1.2;
+
+  /* Spacing (kelipatan 4px) */
+  --space-1: 0.25rem;
+  --space-2: 0.5rem;
+  --space-3: 0.75rem;
+  --space-4: 1rem;
+  --space-5: 1.5rem;
+  --space-6: 2rem;
+  --space-7: 3rem;
+  --space-8: 4.5rem;
+
+  /* Shape, depth & motion */
+  --radius-sm: 4px;
+  --radius-md: 8px;
+  --shadow-window: 0 24px 48px rgba(0, 0, 0, 0.45);
+  --transition: 160ms ease;
+
+  /* Layout & layering */
+  --container-max: 72rem;
+  --gutter: clamp(1rem, 4vw, 2rem);
+  --z-header: 50;
+  --z-skip: 100;
+}
+
+
+/* 2. RESET
+   Menghilangkan perbedaan default antar browser.
+   -------------------------------------------------------------------------- */
+*,
+*::before,
+*::after {
+  box-sizing: border-box; /* padding & border dihitung di dalam width */
+}
+
+* {
+  margin: 0;
+}
+
+img,
+svg {
+  display: block;
+  max-width: 100%;
+}
+
+
+/* 3. BASE STYLES
+   Aturan font: label, identifier, command, heading = mono.
+   Kalimat yang dibaca manusia = sans (Inter).
+   -------------------------------------------------------------------------- */
+html {
+  color-scheme: dark;            /* scrollbar & form control ikut tema gelap */
+  -webkit-text-size-adjust: 100%;
+  scroll-padding-top: 5rem;      /* anchor tidak tertutup header sticky */
+}
+
+/* Smooth scroll hanya untuk pengguna yang tidak mematikan animasi */
+@media (prefers-reduced-motion: no-preference) {
+  html {
+    scroll-behavior: smooth;
+  }
+}
+
+body {
+  min-height: 100vh;
+  display: flex;                 /* footer selalu menempel di bawah */
+  flex-direction: column;
+  background-color: var(--color-bg);
+  color: var(--color-text);
+  font-family: var(--font-sans);
+  font-size: var(--text-base);
+  line-height: var(--leading-body);
+  -webkit-font-smoothing: antialiased;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-mono);
+  line-height: var(--leading-heading);
+  letter-spacing: -0.02em;
+}
+
+h1 {
+  font-size: var(--text-h1);
+  font-weight: 700;
+}
+
+h2 {
+  font-size: var(--text-h2);
+  font-weight: 700;
+}
+
+h3 {
+  font-size: var(--text-h3);
+  font-weight: 500;
+}
+
+.lead {
+  font-size: var(--text-lead);
+  color: var(--color-text-muted);
+}
+
+a {
+  color: var(--color-action);
+  text-decoration-thickness: 1px;
+  text-underline-offset: 0.2em;
+  transition: color var(--transition);
+}
+
+a:hover {
+  color: var(--color-text);
+}
+
+/* Fokus keyboard harus selalu terlihat (aksesibilitas) */
+:focus-visible {
+  outline: 2px solid var(--color-identity);
+  outline-offset: 3px;
+  border-radius: var(--radius-sm);
+}
+
+::selection {
+  background: var(--selection-bg);
+  color: var(--color-text);
+}
+
+
+/* 4. LAYOUT UTILITIES
+   -------------------------------------------------------------------------- */
+.container {
+  width: 100%;
+  max-width: var(--container-max);
+  margin-inline: auto;            /* center horizontal */
+  padding-inline: var(--gutter);
+}
+
+main {
+  flex: 1;                        /* mengisi sisa tinggi layar */
+}
+
+/* Tersembunyi secara visual, tetap terbaca screen reader */
+.visually-hidden {
+  position: absolute;
+  width: 1px;
+  height: 1px;
+  overflow: hidden;
+  clip-path: inset(50%);
+  white-space: nowrap;
+}
+
+/* Skip link: muncul hanya saat difokus dengan Tab */
+.skip-link {
+  position: absolute;
+  top: var(--space-3);
+  left: var(--space-3);
+  z-index: var(--z-skip);         /* di atas header */
+  padding: var(--space-2) var(--space-4);
+  background: var(--color-surface-raised);
+  color: var(--color-text);
+  border: 1px solid var(--color-identity);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  transform: translateY(-200%);
+  transition: transform var(--transition);
+}
+
+.skip-link:focus {
+  transform: translateY(0);
+}
+
+
+/* 5. ATMOSPHERE
+   Cahaya ambient halus di belakang konten. Intensitas diatur lewat token.
+   -------------------------------------------------------------------------- */
+body::before {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: -1;                    /* di belakang semua konten */
+  pointer-events: none;           /* tidak menghalangi klik */
+  background:
+    radial-gradient(60rem 40rem at 10% -10%, var(--glow-ambient-cyan), transparent 60%),
+    radial-gradient(50rem 35rem at 100% 0%,  var(--glow-ambient-violet), transparent 60%);
+}
+
+/* Hormati pengguna yang mematikan animasi di sistem operasinya.
+   animation-iteration-count: 1 mencegah animasi infinite berkedip sangat cepat. */
+@media (prefers-reduced-motion: reduce) {
+  *,
+  *::before,
+  *::after {
+    transition-duration: 0.01ms !important;
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+  }
+}

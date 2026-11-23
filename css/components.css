@@ -1,0 +1,533 @@
+/* ==========================================================================
+   PERSONAL TECH HUB — components.css
+   Neon Nocturne · Full Terminal Interface
+   Komponen reusable. Memakai token dari style.css (muat SETELAH style.css).
+   Komponen memakai ROLE token (--color-action, --color-identity, dst.),
+   bukan warna mentah, supaya aturan warna terjaga di satu tempat.
+   Media query ditulis di dekat komponen yang memakainya.
+
+   Daftar komponen:
+   1. System bar & navigation   (header)
+   2. Labels                    (comment, tag, status)
+   3. Button                    (command-style)
+   4. Window & pane             (kerangka terminal workspace)
+   5. Hero
+   6. Terminal output           (code, syntax colors, cursor)
+   7. Section heading & pane grid
+   8. Status line               (footer)
+   ========================================================================== */
+
+
+/* 1. SYSTEM BAR & NAVIGATION
+   -------------------------------------------------------------------------- */
+.system-bar {
+  background-color: var(--color-surface);
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.system-bar__inner {
+  display: flex;
+  flex-wrap: wrap;                /* di layar sempit, nav turun ke baris bawah */
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  min-height: 3.5rem;
+  padding-block: var(--space-2);
+}
+
+.brand {
+  display: inline-flex;
+  align-items: center;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-base);
+  font-weight: 700;
+  letter-spacing: -0.01em;
+  color: var(--color-text);
+  text-decoration: none;
+}
+
+.brand__prompt {
+  color: var(--color-identity);
+  text-shadow: var(--glow-text-identity);   /* satu-satunya glow teks di situs */
+}
+
+.nav__list {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-1) var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.nav__link {
+  display: inline-block;
+  padding-block: var(--space-2);
+  border-bottom: 2px solid transparent;
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+  text-decoration: none;
+  transition: color var(--transition), border-color var(--transition);
+}
+
+a.nav__link:hover {
+  color: var(--color-text);
+  border-bottom-color: var(--border-action-soft);
+}
+
+/* Halaman aktif: teks terang + garis bawah + penanda ›
+   (aria-current="page" di HTML membuat statusnya terbaca screen reader). */
+.nav__link[aria-current="page"] {
+  color: var(--color-text);
+  border-bottom-color: var(--color-action);
+}
+
+.nav__link[aria-current="page"]::before {
+  content: "›";
+  content: "›" / "";              /* alt kosong: screen reader melewati glyph dekoratif */
+  margin-right: 0.4ch;
+  color: var(--color-action);
+}
+
+/* Halaman yang belum dihubungkan: bukan link, tampil redup, tanpa hover/fokus */
+.nav__link[aria-disabled="true"] {
+  opacity: 0.5;
+  cursor: not-allowed;
+}
+
+/* Header menempel di atas hanya di layar yang cukup lebar.
+   Di HP, header 2 baris yang sticky terlalu memakan layar (disempurnakan di Stage 3). */
+@media (min-width: 48rem) {
+  .system-bar {
+    position: sticky;
+    top: 0;
+    z-index: var(--z-header);
+  }
+}
+
+
+/* 2. LABELS
+   -------------------------------------------------------------------------- */
+
+/* Komentar bergaya kode: "// teks". Tanda // ditambah lewat CSS (dekoratif). */
+.comment {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text-muted);
+}
+
+.comment::before {
+  content: "// ";
+  content: "// " / "";
+  color: var(--color-identity);
+}
+
+/* Tag kecil beraksen amber, mis. "static example · not executed" */
+.tag {
+  display: inline-block;
+  padding: 0.1rem 0.5rem;
+  border: 1px solid var(--border-status-soft);
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-status);
+  white-space: nowrap;
+}
+
+/* Status line: simbol + teks (tidak bergantung pada warna saja) */
+.status {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-2);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-status);
+}
+
+.status__key {
+  color: var(--color-text-muted);
+}
+
+
+/* 3. BUTTON (command-style)
+   Dipakai untuk <a> yang benar-benar menavigasi. Varian: --primary, --secondary.
+   -------------------------------------------------------------------------- */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.6rem;
+  padding: 0.7rem 1.1rem;
+  border: 1px solid transparent;
+  border-radius: var(--radius-sm);
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  font-weight: 500;
+  line-height: 1.2;
+  text-decoration: none;
+  transition: background-color var(--transition), border-color var(--transition),
+              box-shadow var(--transition), color var(--transition),
+              transform var(--transition);
+}
+
+/* Glyph prompt dekoratif (alt kosong agar tidak dibacakan) */
+.btn::before {
+  content: "❯";
+  content: "❯" / "";
+}
+
+.btn:focus-visible {
+  box-shadow: var(--ring-focus);  /* ring tambahan di luar outline global */
+}
+
+.btn--primary {
+  background-color: var(--color-action);
+  border-color: var(--color-action);
+  color: var(--color-bg);         /* teks gelap di atas mint = kontras tinggi */
+  font-weight: 700;
+}
+
+.btn--primary:hover {
+  color: var(--color-bg);         /* menimpa a:hover global (putih) */
+  box-shadow: var(--glow-action);
+}
+
+.btn--primary:active {
+  transform: translateY(1px);
+  box-shadow: none;
+}
+
+.btn--secondary {
+  border-color: var(--color-border-strong);
+  color: var(--color-text);
+}
+
+.btn--secondary::before {
+  color: var(--color-identity);
+}
+
+.btn--secondary:hover {
+  border-color: var(--border-action-soft);
+  background-color: var(--tint-action);
+  box-shadow: var(--glow-action);
+}
+
+.btn--secondary:active {
+  background-color: var(--tint-action-strong);
+  transform: translateY(1px);
+}
+
+
+/* 4. WINDOW & PANE
+   Window = bingkai dengan title bar. Pane = area ber-judul (di dalam window
+   atau berdiri sendiri dengan --framed). Hanya gaya visual, bukan fungsi shell.
+   -------------------------------------------------------------------------- */
+.window {
+  overflow: hidden;               /* sudut title bar ikut membulat */
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-window);
+}
+
+.window__bar {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-3);
+  padding: var(--space-3) var(--space-4);
+  background-color: var(--color-surface-raised);
+  border-bottom: 1px solid var(--color-border-strong);
+}
+
+.window__controls {
+  display: flex;
+  gap: 0.375rem;
+}
+
+.window__controls span {
+  width: 0.625rem;
+  height: 0.625rem;
+  border-radius: 50%;
+  background-color: var(--color-text-muted);
+  opacity: 0.4;                   /* netral: indikator kontrol, bukan tombol sungguhan */
+}
+
+.window__title {
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+  white-space: nowrap;
+}
+
+.pane {
+  display: flex;
+  flex-direction: column;
+  min-width: 0;                   /* izinkan isi (pre) menyusut & scroll sendiri */
+}
+
+.pane__header {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--space-1) var(--space-3);
+  min-height: 2.75rem;            /* header pane bersebelahan sama tinggi */
+  padding: 0.55rem var(--space-4);
+  background-color: var(--tint-neutral);
+  border-bottom: 1px solid var(--color-border);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+}
+
+.pane__id {
+  color: var(--color-identity);
+}
+
+.pane__name,
+.pane__title {
+  font-size: var(--text-sm);
+  font-weight: 500;
+  letter-spacing: 0;
+  color: var(--color-text);
+}
+
+/* Catatan di atas isi terminal, mis. tag "static example · not executed" */
+.pane__note {
+  padding: var(--space-5) var(--space-5) 0;
+}
+
+.pane__note + .code {
+  padding-top: var(--space-3);
+}
+
+.pane__body {
+  flex: 1;
+  padding: var(--space-5);
+}
+
+/* Pane berdiri sendiri (dipakai di archive overview) */
+.pane--framed {
+  height: 100%;                   /* semua pane satu baris sama tinggi */
+  overflow: hidden;
+  background-color: var(--color-surface);
+  border: 1px solid var(--color-border-strong);
+  border-radius: var(--radius-md);
+}
+
+.pane--framed .pane__body {
+  display: flex;
+  flex-direction: column;
+  gap: var(--space-4);
+}
+
+.pane--framed .status {
+  margin-top: auto;               /* status selalu di dasar pane */
+}
+
+
+/* 5. HERO
+   Satu window berisi dua pane. Mobile-first: pane menumpuk;
+   berdampingan mulai 56rem (~896px).
+   -------------------------------------------------------------------------- */
+.hero {
+  padding-block: var(--space-6) var(--space-7);
+}
+
+.panes {
+  display: grid;
+}
+
+.panes > .pane + .pane {
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.hero__title {
+  margin-top: var(--space-3);
+  padding-left: 1.2em;            /* hanging indent: baris kedua sejajar dengan teks, */
+  text-indent: -1.2em;            /* bukan dengan glyph ❯ */
+}
+
+.hero__prompt {
+  color: var(--color-identity);
+  text-shadow: var(--glow-text-identity);
+}
+
+.hero .lead {
+  max-width: 34rem;
+  margin-top: var(--space-5);
+}
+
+.hero__actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: var(--space-3);
+  margin-top: var(--space-6);
+}
+
+/* Metadata sistem: <dl> key/value */
+.meta {
+  display: grid;
+  gap: var(--space-2);
+  margin-top: var(--space-6);
+  padding-top: var(--space-5);
+  border-top: 1px dashed var(--color-border-strong);
+}
+
+.meta__row {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0 var(--space-4);
+}
+
+.meta dt {
+  flex: 0 0 8.5rem;
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}
+
+.meta dt::after {
+  content: ":";
+  content: ":" / "";
+}
+
+.meta dd {
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  color: var(--color-text);
+}
+
+.meta__status {
+  color: var(--color-status);
+}
+
+@media (min-width: 56rem) {
+  .hero {
+    padding-block: var(--space-7) var(--space-8);
+  }
+
+  .panes {
+    /* minmax(0, ...) membolehkan kolom menyusut sehingga <pre> scroll di dalam pane */
+    grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr);
+  }
+
+  .panes > .pane + .pane {
+    border-top: 0;
+    border-left: 1px solid var(--color-border-strong);
+  }
+
+  .hero .pane__body {
+    padding: var(--space-6);
+  }
+}
+
+
+/* 6. TERMINAL OUTPUT
+   Isi snapshot statis. Warna sintaks mengikuti aturan palet:
+   $ mint · command cyan · flag magenta (jarang) · path violet · file putih.
+   -------------------------------------------------------------------------- */
+.code {
+  flex: 1;
+  margin: 0;
+  padding: var(--space-5);
+  overflow-x: auto;               /* layar sempit: scroll di dalam pane, bukan halaman */
+  font-family: var(--font-mono);
+  font-size: var(--text-sm);
+  line-height: 1.7;
+  color: var(--color-text);
+}
+
+.code code {
+  font: inherit;
+}
+
+.t-prompt  { color: var(--color-action); }
+.t-cmd     { color: var(--color-identity); }
+.t-flag    { color: var(--color-flag); }
+.t-dir     { color: var(--color-path); }
+.t-file    { color: var(--color-text); }
+.t-tree,
+.t-summary { color: var(--color-text-muted); }
+
+/* Kursor blok dekoratif. Bukan input dan bukan sesi shell.
+   Disembunyikan dari screen reader lewat aria-hidden di HTML. */
+.cursor {
+  display: inline-block;
+  width: 0.5em;
+  height: 0.95em;
+  margin-left: 0.2em;
+  vertical-align: -0.08em;
+  background-color: var(--color-identity);
+  animation: cursor-blink 1.2s steps(1, end) infinite;
+}
+
+@keyframes cursor-blink {
+  50% {
+    opacity: 0;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .cursor {
+    animation: none;              /* kursor tampil statis */
+  }
+}
+
+
+/* 7. SECTION HEADING & PANE GRID
+   -------------------------------------------------------------------------- */
+.section {
+  padding-block: var(--space-7) var(--space-8);
+}
+
+.section-heading {
+  max-width: 40rem;
+  margin-bottom: var(--space-6);
+}
+
+.section-heading h2 {
+  margin-top: var(--space-2);
+}
+
+.section-heading p:last-child {
+  margin-top: var(--space-3);
+  color: var(--color-text-muted);
+}
+
+.pane-grid {
+  display: grid;
+  gap: var(--space-5);
+  padding: 0;
+  list-style: none;
+}
+
+.pane__text {
+  color: var(--color-text-muted);
+}
+
+@media (min-width: 48rem) {
+  .pane-grid {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+  }
+}
+
+
+/* 8. STATUS LINE (footer)
+   Simetris dengan system bar di atas.
+   -------------------------------------------------------------------------- */
+.status-line {
+  padding-block: var(--space-3);
+  background-color: var(--color-surface);
+  border-top: 1px solid var(--color-border-strong);
+}
+
+.status-line__inner {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-2) var(--space-5);
+  font-family: var(--font-mono);
+  font-size: var(--text-xs);
+  color: var(--color-text-muted);
+}

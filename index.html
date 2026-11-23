@@ -1,0 +1,187 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Personal Tech Hub</title>
+  <meta name="description" content="A personal engineering and technology archive documenting projects, experiments, and technical learning.">
+  <meta name="theme-color" content="#080B12">
+
+  <!-- Google Fonts: JetBrains Mono (identitas terminal) + Inter (paragraf) -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&family=JetBrains+Mono:wght@400;500;700&display=swap">
+
+  <!-- Urutan penting: style.css (token + base) dulu, baru components.css -->
+  <link rel="stylesheet" href="css/style.css">
+  <link rel="stylesheet" href="css/components.css">
+</head>
+<body id="top">
+
+  <a class="skip-link" href="#main">Skip to content</a>
+
+  <header class="system-bar">
+    <div class="container system-bar__inner">
+      <a class="brand" href="index.html">
+        <span class="brand__prompt" aria-hidden="true">❯</span>
+        personal-tech-hub
+      </a>
+
+      <nav class="nav" aria-label="Primary">
+        <ul class="nav__list">
+          <li><a class="nav__link" href="index.html" aria-current="page">home</a></li>
+          <!-- Belum dihubungkan (halaman dibangun ulang di Stage 4): item disabled, bukan link -->
+          <li><span class="nav__link" aria-disabled="true">about <span class="visually-hidden">(coming soon)</span></span></li>
+          <li><span class="nav__link" aria-disabled="true">projects <span class="visually-hidden">(coming soon)</span></span></li>
+          <li><span class="nav__link" aria-disabled="true">tech-lab <span class="visually-hidden">(coming soon)</span></span></li>
+          <li><span class="nav__link" aria-disabled="true">knowledge <span class="visually-hidden">(coming soon)</span></span></li>
+          <li><span class="nav__link" aria-disabled="true">contact <span class="visually-hidden">(coming soon)</span></span></li>
+        </ul>
+      </nav>
+    </div>
+  </header>
+
+  <main id="main" class="container" tabindex="-1">
+
+    <section class="hero" aria-labelledby="hero-title">
+      <div class="window">
+        <div class="window__bar">
+          <span class="window__controls" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="window__title">personal-tech-hub — welcome</span>
+        </div>
+
+        <div class="panes">
+          <!-- Pane 0: welcome -->
+          <div class="pane">
+            <div class="pane__header">
+              <span class="pane__id" aria-hidden="true">[0]</span>
+              <span class="pane__name">welcome</span>
+            </div>
+            <div class="pane__body">
+              <p class="comment">personal engineering archive</p>
+              <h1 id="hero-title" class="hero__title"><span class="hero__prompt" aria-hidden="true">❯ </span>Engineering, documented.<span class="cursor" aria-hidden="true"></span></h1>
+              <p class="lead">
+                A personal space for documenting engineering projects, experiments,
+                and technical learning.
+              </p>
+              <div class="hero__actions">
+                <a class="btn btn--primary" href="#archive">Explore the archive</a>
+                <a class="btn btn--secondary" href="#project-structure">See project structure</a>
+              </div>
+
+              <!-- Metadata: hanya fakta yang sesuai implementasi saat ini.
+                   "status" diperbarui manual setiap stage. -->
+              <dl class="meta">
+                <div class="meta__row"><dt>environment</dt><dd>html5 · css3</dd></div>
+                <div class="meta__row"><dt>interface</dt><dd>terminal-inspired</dd></div>
+                <div class="meta__row"><dt>status</dt><dd class="meta__status">stage 2 redesign</dd></div>
+              </dl>
+            </div>
+          </div>
+
+          <!-- Pane 1: contoh statis struktur proyek (BUKAN output shell sungguhan).
+               Disalin dari struktur folder yang diberikan pemilik proyek.
+               Perbarui manual setiap ada file/folder baru. -->
+          <figure class="pane" id="project-structure">
+            <figcaption class="pane__header">
+              <span class="pane__id" aria-hidden="true">[1]</span>
+              <span class="pane__name">project-structure</span>
+              <span class="tag">static example · not executed</span>
+            </figcaption>
+            <p class="visually-hidden">
+              Static example, not live output. Project folders: assets (icons, images),
+              css (components.css, responsive.css, style.css), js (main.js), and pages
+              (about.html, contact.html, knowledge.html, projects.html, tech-lab.html).
+              Project files: index.html and readme.md.
+            </p>
+            <pre class="code" aria-hidden="true"><code><span class="t-prompt">$</span> <span class="t-cmd">tree</span> <span class="t-flag">-L</span> 2 <span class="t-flag">--dirsfirst</span> <span class="t-dir">personal-tech-hub</span>
+<span class="t-dir">personal-tech-hub</span>
+<span class="t-tree">├── </span><span class="t-dir">assets</span>
+<span class="t-tree">│   ├── </span><span class="t-dir">icons</span>
+<span class="t-tree">│   └── </span><span class="t-dir">images</span>
+<span class="t-tree">├── </span><span class="t-dir">css</span>
+<span class="t-tree">│   ├── </span><span class="t-file">components.css</span>
+<span class="t-tree">│   ├── </span><span class="t-file">responsive.css</span>
+<span class="t-tree">│   └── </span><span class="t-file">style.css</span>
+<span class="t-tree">├── </span><span class="t-dir">js</span>
+<span class="t-tree">│   └── </span><span class="t-file">main.js</span>
+<span class="t-tree">├── </span><span class="t-dir">pages</span>
+<span class="t-tree">│   ├── </span><span class="t-file">about.html</span>
+<span class="t-tree">│   ├── </span><span class="t-file">contact.html</span>
+<span class="t-tree">│   ├── </span><span class="t-file">knowledge.html</span>
+<span class="t-tree">│   ├── </span><span class="t-file">projects.html</span>
+<span class="t-tree">│   └── </span><span class="t-file">tech-lab.html</span>
+<span class="t-tree">├── </span><span class="t-file">index.html</span>
+<span class="t-tree">└── </span><span class="t-file">readme.md</span>
+
+<span class="t-summary">6 directories, 11 files</span></code></pre>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section class="section" id="archive" aria-labelledby="archive-title">
+      <div class="section-heading">
+        <p class="comment">archive overview</p>
+        <h2 id="archive-title">Three areas, one archive</h2>
+        <p>Each area has a distinct purpose. Entries are added only when they are real.</p>
+      </div>
+
+      <ul class="pane-grid">
+        <li>
+          <article class="pane pane--framed">
+            <header class="pane__header">
+              <h3 class="pane__title"><span class="pane__id" aria-hidden="true">[01]</span> projects</h3>
+            </header>
+            <div class="pane__body">
+              <p class="pane__text">
+                Engineering projects documented from goal to result: what was built,
+                how it works, and what was learned.
+              </p>
+              <p class="status"><span class="status__key">status:</span> <span aria-hidden="true">○</span> <span>no entries yet</span></p>
+            </div>
+          </article>
+        </li>
+        <li>
+          <article class="pane pane--framed">
+            <header class="pane__header">
+              <h3 class="pane__title"><span class="pane__id" aria-hidden="true">[02]</span> tech-lab</h3>
+            </header>
+            <div class="pane__body">
+              <p class="pane__text">
+                Experiments and prototypes: smaller explorations and tests that
+                may or may not grow into full projects.
+              </p>
+              <p class="status"><span class="status__key">status:</span> <span aria-hidden="true">○</span> <span>no entries yet</span></p>
+            </div>
+          </article>
+        </li>
+        <li>
+          <article class="pane pane--framed">
+            <header class="pane__header">
+              <h3 class="pane__title"><span class="pane__id" aria-hidden="true">[03]</span> knowledge</h3>
+            </header>
+            <div class="pane__body">
+              <p class="pane__text">
+                Structured technical notes: concepts explained and organized
+                for long-term reference.
+              </p>
+              <p class="status"><span class="status__key">status:</span> <span aria-hidden="true">○</span> <span>no entries yet</span></p>
+            </div>
+          </article>
+        </li>
+      </ul>
+    </section>
+
+  </main>
+
+  <footer class="status-line">
+    <div class="container status-line__inner">
+      <span>personal-tech-hub</span>
+      <span>static site</span>
+      <a href="#top" aria-label="Back to top"><span aria-hidden="true">↑</span> top</a>
+    </div>
+  </footer>
+
+</body>
+</html>
